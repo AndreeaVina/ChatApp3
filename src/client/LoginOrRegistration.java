@@ -1,5 +1,7 @@
 package client;
 
+import database.Dao;
+import database.DataBaseConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +15,9 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class LoginOrRegistration {
@@ -59,7 +64,7 @@ public class LoginOrRegistration {
     public static String username, gender, password,email,phoneNumber,fullName;
     public static ArrayList<User> users = new ArrayList<User>();
     public static ArrayList<User> logInUsers = new ArrayList<User>();
-
+    Connection connection = DataBaseConnection.getConnection();
     @FXML
     private void handleButtonAction(ActionEvent event) {
         if (event.getSource().equals(btnSignUp)) {
@@ -94,7 +99,7 @@ public class LoginOrRegistration {
     }
 
     @FXML
-    private void registration() {
+    private void registration() throws SQLException {
         if (!regFullName.getText().equalsIgnoreCase("")
                 && !regUserName.getText().equalsIgnoreCase("")
                 && !regEmail.getText().equalsIgnoreCase("")
@@ -108,10 +113,11 @@ public class LoginOrRegistration {
                     user.setEmail(regEmail.getText());
                     user.setPassword(regPassword.getText());
                     user.setPhoneNumber(regPhoneNumber.getText());
-                    if (male.isSelected())
-                        user.setGender("Male");
-                    else if (female.isSelected())
-                        user.setGender("Female");
+                    if(male.isSelected()==true)
+                        user.setGender("male");
+                    else user.setGender("female");
+                    Dao dao = new Dao();
+                    dao.insertUser(connection,user);
                     users.add(user);
                     success.setOpacity(1);
                     goBack.setOpacity(1);
