@@ -10,6 +10,14 @@ public class User {
     User(){
 
     }
+    public User(String fullName, String userName, String email, String phone, String gender, String password){
+        this.setFullName(fullName);
+        this.setUserName(userName);
+        this.setEmail(email);
+        this.setPhoneNumber(phone);
+        this.setGender(gender);
+        this.setPassword(password);
+    }
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }

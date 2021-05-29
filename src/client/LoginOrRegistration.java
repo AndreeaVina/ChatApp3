@@ -22,13 +22,9 @@ import java.util.ArrayList;
 
 public class LoginOrRegistration {
     @FXML
-    public Pane pnSignIn;
+    public Button buttonSignIn;
     @FXML
-    public Pane pnSignUp;
-    @FXML
-    public Button btnSignIn;
-    @FXML
-    public Button btnSignUp;
+    public Button buttonSignUp;
     @FXML
     public Button getStarted;
     @FXML
@@ -61,41 +57,41 @@ public class LoginOrRegistration {
     public Label controlRegLabel;
     @FXML
     public Label loginNotifier;
-    public static String username, gender, password,email,phoneNumber,fullName;
-    public static ArrayList<User> users = new ArrayList<User>();
-    public static ArrayList<User> logInUsers = new ArrayList<User>();
+    @FXML
+    public Pane panelSignIn;
+    @FXML
+    public Pane panelSignUp;
+    public static String username, gender, password, email, phoneNumber, fullName;
+    //    public static ArrayList<User> logInUsers = new ArrayList<User>();
     Connection connection = DataBaseConnection.getConnection();
+
     @FXML
     private void handleButtonAction(ActionEvent event) {
-        if (event.getSource().equals(btnSignUp)) {
-            pnSignUp.toFront();
-        }
         if (event.getSource().equals(getStarted)) {
-            pnSignIn.toFront();
+            panelSignIn.toFront();
+        }
+        if (event.getSource().equals(buttonSignUp)) {
+            panelSignUp.toFront();
         }
         userName.setText("");
         passWord.setText("");
     }
 
     @FXML
-    private void login() {
-        var login = false;
-        for (var user : users) {
-            if (user.getUserName().equals(userName.getText()) && user.getPassword().equals(passWord.getText())) {
-                login = true;
-                logInUsers.add(user);
-                fullName =  user.getFullName();
+    private void login() throws SQLException {
+        var dao4 = new Dao();
+        var user = new User();
+        user = dao4.getUserByUserName(connection, userName.getText());
+        if (user.getPassword().equals(passWord.getText())){
+            fullName =  user.getFullName();
                 username = userName.getText();
                 password = passWord.getText();
                 gender = user.getGender();
                 email = user.getEmail();
                 phoneNumber = user.getPhoneNumber();
-                break;
-            }
+            changeWindow();
         }
-        if (login == false)
-            loginNotifier.setOpacity(1);
-        else changeWindow();
+        else loginNotifier.setOpacity(1);
     }
 
     @FXML
@@ -105,23 +101,24 @@ public class LoginOrRegistration {
                 && !regEmail.getText().equalsIgnoreCase("")
                 && !regPassword.getText().equalsIgnoreCase("")
                 && !regPhoneNumber.getText().equalsIgnoreCase("")) {
-            if (checkUser(regUserName.getText()) == 1) {
-                if (checkEmail(regEmail.getText()) == 1) {
+            var dao2 = new Dao();
+            if (dao2.searchUserByUserName(connection, regUserName.getText()) == 0) {
+                var dao3 = new Dao();
+                if (dao3.searchUserByEmail(connection, regEmail.getText()) == 0) {
                     var user = new User();
                     user.setFullName(regFullName.getText());
                     user.setUserName(regUserName.getText());
                     user.setEmail(regEmail.getText());
                     user.setPassword(regPassword.getText());
                     user.setPhoneNumber(regPhoneNumber.getText());
-                    if(male.isSelected()==true)
+                    if (male.isSelected() == true)
                         user.setGender("male");
                     else user.setGender("female");
-                    Dao dao = new Dao();
-                    dao.insertUser(connection,user);
-                    users.add(user);
+                    Dao dao1 = new Dao();
+                    dao1.insertUser(connection, user);
                     success.setOpacity(1);
                     goBack.setOpacity(1);
-                    makeDefault();
+                    resetInfo();
                     emailExists.setOpacity(0);
                     nameExists.setOpacity(0);
                 } else {
@@ -147,23 +144,7 @@ public class LoginOrRegistration {
         }
     }
 
-    private int checkUser(String userName) {
-        for (User u : users) {
-            if (u.getUserName().equals(userName))
-                return -1;
-        }
-        return 1;
-    }
-
-    private int checkEmail(String email) {
-        for (User u : users) {
-            if (u.getEmail().equals(email))
-                return -1;
-        }
-        return 1;
-    }
-
-    private void makeDefault() {
+    private void resetInfo() {
         regFullName.setText("");
         regUserName.setText("");
         regEmail.setText("");

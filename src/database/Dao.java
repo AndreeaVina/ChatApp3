@@ -20,7 +20,43 @@ public class Dao {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
+    }
+    public int searchUserByEmail(Connection db,String email) throws SQLException {
+        Statement statement = db.createStatement();
+        ResultSet set = statement.executeQuery("SELECT * FROM users WHERE email LIKE '" + email + "'");
+        if (set.next())
+            return -1;
+        else return 0;
+    }
+    public int searchUserByUserName(Connection db,String username) throws SQLException {
+        Statement statement = db.createStatement();
+        ResultSet set = statement.executeQuery("SELECT * FROM users WHERE username LIKE '" + username + "'");
+        if (set.next())
+            return -1;
+        else return 0;
+    }
+    public User getUserByUserName(Connection db,String username) throws SQLException {
+        Statement statement = db.createStatement();
+        ResultSet set = statement.executeQuery("SELECT * FROM users WHERE username LIKE '" + username + "'");
+        if (set.next()) {
+            System.out.println("aici");
+            return new User(
+                    set.getString("full_name"),
+                    set.getString("username"),
+                    set.getString("email"),
+                    set.getString("phone"),
+                    set.getString("gender"),
+                    set.getString("password")
+            );
+        }
+        return new User(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
 }
