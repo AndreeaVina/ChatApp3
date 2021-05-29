@@ -57,7 +57,7 @@ public class ChatRoom extends Thread implements Initializable {
     public TextField fileChoosePath;
     private FileChooser fileChooser;
     private File filePath;
-    private boolean saveControl = false;
+    private boolean saveImage = false;
     private BufferedReader reader;
     private PrintWriter writer;
     private Socket socket;
@@ -66,23 +66,16 @@ public class ChatRoom extends Thread implements Initializable {
     public void run() {
         try {
             while (true) {
-                String msg = reader.readLine();
-                String[] tokens = msg.split(" ");
-//                System.out.println(tokens);
-                String cmd = tokens[0];
-//                System.out.println(cmd);
-                StringBuilder fulmsg = new StringBuilder();
-                for(int i = 0; i < tokens.length; i++) {
-                    fulmsg.append(tokens[i]);
-                    System.out.println(tokens[i]);
-                }
-                System.out.println(fulmsg);
-                if (cmd.equalsIgnoreCase(LoginOrRegistration.username + ":")) {
+                String message = reader.readLine();
+                String[] words = message.split(" ");
+                String sender = words[0];
+                if (sender.equalsIgnoreCase(LoginOrRegistration.username + ":")) {
                     continue;
-                } else if(fulmsg.toString().equalsIgnoreCase("bye")) {
+                } else if(message.equalsIgnoreCase("bye")) {
                     break;
                 }
-                msgRoom.appendText(msg + "\n");
+                msgRoom.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+                msgRoom.appendText(message + "\n");
             }
             reader.close();
             writer.close();
@@ -112,19 +105,18 @@ public class ChatRoom extends Thread implements Initializable {
     }
     public void send() {
         String msg = msgField.getText();
-        writer.println(LoginOrRegistration.username + ": " + msg);
-        System.out.println(writer);
-        msgRoom.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-        msgRoom.appendText("Me: " + msg + "\n");
-        msgField.setText("");
-        if(msg.equalsIgnoreCase("BYE") || (msg.equalsIgnoreCase("logout"))) {
+        if(msg.equalsIgnoreCase("BYE")) {
             writer.println(LoginOrRegistration.username + " left the chat ...  " );
             System.exit(0);
         }
+        writer.println(LoginOrRegistration.username + ": " + msg);
+        System.out.println(writer);
+        msgRoom.appendText("Me: " + msg + "\n");
+        msgField.setText("");
     }
     public void connectSocket() {
         try {
-            socket = new Socket("localhost", 8889);
+            socket = new Socket("localhost", 7000);
             System.out.println("Socket is connected with server!");
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream(), true);
@@ -152,19 +144,14 @@ public class ChatRoom extends Thread implements Initializable {
         fileChooser.setTitle("Open Image");
         this.filePath = fileChooser.showOpenDialog(stage);
         fileChoosePath.setText(filePath.getPath());
-        saveControl = true;
+        saveImage = true;
     }
     public void saveImage() {
-        if (saveControl) {
-            try {
-                BufferedImage bufferedImage = ImageIO.read(filePath);
-                var image = new Image(String.valueOf(filePath.toURI()));
-                circlePic.setFill(new ImagePattern(image));
-                saveControl = false;
-                fileChoosePath.setText("");
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-            }
+        if (saveImage) {
+            saveImage = false;
+            var image = new Image(String.valueOf(filePath.toURI()));
+            circlePic.setFill(new ImagePattern(image));
+            fileChoosePath.setText("");
         }
     }
     private void setProfile(){
