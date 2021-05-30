@@ -62,7 +62,6 @@ public class LoginOrRegistration {
     @FXML
     public Pane panelSignUp;
     public static String username, gender, password, email, phoneNumber, fullName;
-    //    public static ArrayList<User> logInUsers = new ArrayList<User>();
     Connection connection = DataBaseConnection.getConnection();
 
     @FXML
@@ -82,16 +81,16 @@ public class LoginOrRegistration {
         var dao4 = new Dao();
         var user = new User();
         user = dao4.getUserByUserName(connection, userName.getText());
-        if (user.getPassword().equals(passWord.getText())){
-            fullName =  user.getFullName();
-                username = userName.getText();
-                password = passWord.getText();
-                gender = user.getGender();
-                email = user.getEmail();
-                phoneNumber = user.getPhoneNumber();
+        if (user.getPassword().equals(passWord.getText())) {
+            fullName = user.getFullName();
+            username = userName.getText();
+            password = passWord.getText();
+            gender = user.getGender();
+            email = user.getEmail();
+            phoneNumber = user.getPhoneNumber();
+            dao4.updateStatus(connection,username,"activ");
             changeWindow();
-        }
-        else loginNotifier.setOpacity(1);
+        } else loginNotifier.setOpacity(1);
     }
 
     @FXML
@@ -161,6 +160,12 @@ public class LoginOrRegistration {
             stage.setScene(new Scene(root, 330, 560));
             stage.setTitle(userName.getText() + "");
             stage.setOnCloseRequest(event -> {
+                var dao = new Dao();
+                try {
+                    dao.updateStatus(connection, username, "deconectat");
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 System.exit(0);
             });
             stage.setResizable(false);

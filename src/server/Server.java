@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class Server {
     private static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
-
     public static void main(String[] args) {
         ServerSocket serverSocket;
         Socket socket;

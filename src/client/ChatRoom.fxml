@@ -16,7 +16,7 @@
     <children>
         <StackPane layoutY="67.0" prefHeight="494.0" prefWidth="330.0">
             <children>
-                <Pane fx:id="profilePanel" prefHeight="448.0" prefWidth="335.0" style="-fx-background-color: #263238;" styleClass="text-area">
+                <Pane fx:id="profilePanel" prefHeight="448.0" prefWidth="335.0" style="-fx-background-color: #263238;">
                     <children>
                         <Label layoutX="9.0" layoutY="93.0" text="Full Name: " textFill="#e1dfdf">
                             <font>
@@ -104,6 +104,15 @@
                         </TextArea>
                     </children>
                 </Pane>
+            <Pane fx:id="activeUsersPanel" layoutX="10.0" layoutY="10.0" prefHeight="448.0" prefWidth="335.0" style="-fx-background-color: #263238;">
+               <children>
+                  <TextArea fx:id="activeUsers" layoutY="25.0" prefHeight="413.0" prefWidth="330.0" style="-fx-background-color: black;" styleClass="text-area">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </TextArea>
+               </children>
+            </Pane>
             </children>
         </StackPane>
         <AnchorPane fx:id="antetAnchorPane" prefHeight="83.0" prefWidth="334.0" style="-fx-background-color: #102027#718792;">
@@ -113,13 +122,23 @@
                         <Font name="Arial" size="19.0" />
                     </font>
                 </Label>
-                <Button fx:id="profileBtn" layoutX="257.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleButtonAction2" styleClass="allButton" stylesheets="@../stylesheets.css" text="Profile">
+                <Button fx:id="profileBtn" layoutX="257.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleButtonAction2" styleClass="allButton" stylesheets="@../stylesheets.css" text="Profile">
                     <font>
                         <Font name="Arial" size="15.0" />
                     </font>
                 </Button>
                 <Circle fx:id="circlePic" fill="DODGERBLUE" layoutX="38.0" layoutY="40.0" radius="38.0" stroke="BLACK" strokeType="INSIDE" />
                 <ImageView fx:id="chatImage" fitHeight="60.0" fitWidth="59.0" layoutX="9.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" />
+            <Button fx:id="activeBtn" layoutX="257.0" layoutY="53.0" mnemonicParsing="false" onAction="#handleButtonAction2" styleClass="allButton" stylesheets="@../stylesheets.css" text="Active" textFill="#6cd198e8">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Button>
+            <Button fx:id="logoutBtn" layoutX="188.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleButtonAction2" styleClass="allButton" stylesheets="@../stylesheets.css" text="Logout" textFill="#b63434e8">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Button>
             </children>
         </AnchorPane>
     </children>
